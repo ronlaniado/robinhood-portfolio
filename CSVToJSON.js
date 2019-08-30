@@ -32,30 +32,34 @@ const getStocks = data => {
   console.log("Grabbing stocks, please wait...");
   for (let i = 0; i < data.length; i++) {
     // Checks to only add completed and bought stocks
-    if (data[i].execution_state === "completed" && data[i].side === "buy") {
+    if (data[i].state === "filled" && data[i].side === "buy") {
+      console.log("bought " + data[i].quantity + " " + data[i].symbol);
       if (data[i].symbol in stocks) {
         // Adds the stock symbol (ex: AAPL, SNAP, SPOT) into the object
         stocks[data[i].symbol] += parseInt(data[i].quantity);
-      } else {
+      } else {  
         // Creates a new symbol in the object and sets a quatity to it
         stocks[data[i].symbol] = parseInt(data[i].quantity);
       }
-    } else if (
-      data[i].execution_state === "completed" &&
-      data[i].side === "sell" &&
-      data[i].symbol in stocks
-    ) {
-      console.log("sold!")
-
+    } else if (data[i].state === "filled" && data[i].side === "sell") {
       // Substracts the bought shares by the sold shares in order to retain only what is currently being held
       stocks[data[i].symbol] -= parseInt(data[i].quantity);
+      console.log("sold" + data[i].quantity + " " + data[i].symbol);
+    } else {
+      console.log(
+        "whuuuut" +
+          data[i].symbol +
+          " " +
+          data[i].state +
+          data[i].side +
+          " " +   
+          data[i].quantity
+      );
     }
   }
   console.log(stocks);
   console.log("Done grabbing stocks!\n");
 };
-
-
 
 const deDupe = arr => {
   console.log("Now removing all duplicate stocks, please wait...");
