@@ -48,14 +48,21 @@ const getStocks = data => {
     }
   }
   console.log("Done grabbing stocks!\n");
-  console.log(stocks);
-  averagePrices(data, stocks)
+  removeSold(stocks);
 };
 
-const averagePrices = (data, stocks) => {
-
+const removeSold = (stocks) => {
+  let quantity = Object.values(stocks);
+  let shares = Object.keys(stocks);
+  for (let i = 0; i < quantity.length; i++) {
+    // If the quantity of held stocks is 0, then that stock symbol will be removed 
+    if (quantity[i] === 0) {
+      // Removes any stock with 0 shares
+      delete stocks[shares[i]];
+    }
+  }
+  averagePrices(stocks) 
 }
-
 
 
 module.exports = {
