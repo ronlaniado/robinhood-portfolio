@@ -33,6 +33,7 @@ const getStocks = data => {
   for (let i = data.length - 1; i >= 0; i--) {
     // Checks to only add completed and bought stocks
     if (data[i].state === "filled" && data[i].side === "buy") {
+      // Checks if the stocks symbol is already in the object, otherwise, adds it
       if (data[i].symbol in stocks) {
         // Adds the stock symbol (ex: AAPL, SNAP, SPOT) into the object
         stocks[data[i].symbol] += parseInt(data[i].quantity);
@@ -40,6 +41,7 @@ const getStocks = data => {
         // Creates a new symbol in the object and sets a quatity to it
         stocks[data[i].symbol] = parseInt(data[i].quantity);
       }
+      // Handles sucessfully sold stocks
     } else if (data[i].state === "filled" && data[i].side === "sell" && data[i].symbol in stocks) {
         // Substracts the bought shares by the sold shares in order to retain only what is currently being held
         stocks[data[i].symbol] -= parseInt(data[i].quantity);
@@ -47,8 +49,13 @@ const getStocks = data => {
   }
   console.log("Done grabbing stocks!\n");
   console.log(stocks);
-
+  averagePrices(data, stocks)
 };
+
+const averagePrices = (data, stocks) => {
+
+}
+
 
 
 module.exports = {
