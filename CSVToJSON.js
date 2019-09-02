@@ -37,7 +37,7 @@ const getStocks = data => {
       if (data[i].symbol in stocks) {
         // Adds the stock symbol (ex: AAPL, SNAP, SPOT) into the object
         stocks[data[i].symbol] += parseInt(data[i].quantity);
-      } else {  
+      } else {
         // Creates a new symbol in the object and sets a quatity to it
         stocks[data[i].symbol] = parseInt(data[i].quantity);
       }
@@ -46,24 +46,36 @@ const getStocks = data => {
         // Substracts the bought shares by the sold shares in order to retain only what is currently being held
         stocks[data[i].symbol] -= parseInt(data[i].quantity);
     }
-  }
-  console.log("Done grabbing stocks!\n");
-  removeSold(stocks);
-};
 
-const removeSold = (stocks) => {
-  let quantity = Object.values(stocks);
-  let shares = Object.keys(stocks);
-  for (let i = 0; i < quantity.length; i++) {
-    // If the quantity of held stocks is 0, then that stock symbol will be removed 
-    if (quantity[i] === 0) {
-      // Removes any stock with 0 shares
-      delete stocks[shares[i]];
+    // Removes all stocks with 0 shares from object
+    if (stocks[data[i].symbol] === 0) {
+      delete stocks[data[i].symbol];
     }
   }
-  averagePrices(stocks) 
-}
+  console.log("Done grabbing stocks!\n");
+  console.log(stocks);
+  averagePrices(stocks, data)
+};
 
+const averagePrices = (stocks, data) => {
+  console.log("Calculating average prices...\n ------ \n");
+  let symbols = Object.keys(stocks);
+  let averages = [];
+  for (let i = 0; i < data.length; i++) {
+    // Looks for the symbol in data object
+    if (symbols.includes(data[i].symbol)) {
+      // Finds the index at which the symbol is found
+      let index = symbols.indexOf(data[i].symbol);
+      // Removes the symbol from array to avoid repeating 
+      symbols.splice(index, 1);
+      // Gets the average price paid, round it to 2 decimal places, and puts it into the averages object
+      averages[data[i].symbol] = parseFloat(data[i].average_price).toFixed(2);
+    }
+  }
+  console.log (averages);
+  console.log("\n ------ \nDone calculating average prices for held stocks! \n ------");
+  
+}
 
 module.exports = {
   convertType: CSVToJSON
